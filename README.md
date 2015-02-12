@@ -8,8 +8,7 @@ We just need to start an http static server - there are many ways of doing this 
 Assuming you have python 2.7 installed on your machine, you can do the following.
 
 - cd into the project folder
-- then run 
-      python -m SimpleHTTPServer 8000
+- then run `python -m SimpleHTTPServer 8000`
 
 This will start a server serving static content from the project folder.
 
