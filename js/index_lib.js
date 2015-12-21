@@ -27,8 +27,8 @@ function getDataAndDraw() {
 //             ...,
 //            [v_n1, v_n2, ...]]
 //   }
-// 'type' can be one of the following strings: BarChart, ColumnChart, PieChart, ...
-// (see https://google-developers.appspot.com/chart/interactive/docs/gallery)
+// 'type' can be one of the following strings: bar, line, scatter, ...
+// (see https://www.hexagonjs.io/docs/1.0.4/plot/)
 function drawChart(node, data, type, title){
   var graph = new hx.Graph(node)
 
@@ -39,15 +39,21 @@ function drawChart(node, data, type, title){
     y: {
       scaleType: 'linear',
       scalePaddingMax: 0.1,
-      yMin: 0
+      min: 0
     }
   });
+
+  var colorScale = new hx.ColorScale(0, 1, [
+    {color:hx.theme.plot.colors[1], val:0},
+    {color:hx.theme.plot.colors[5], val:1}
+  ]);
+
 
   refactored = data.rows.map(function (d) {
     return {
       x: d[0],
       y: d[1],
-      // color: hx.theme.plot.colors[d[1]]
+      color: colorScale.apply(d[1]/10)
     }
   });
 
