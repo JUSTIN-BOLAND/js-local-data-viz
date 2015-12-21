@@ -1,26 +1,20 @@
-// Load the Visualization API and the piechart package.
-google.load('visualization', '1.0', {'packages':['corechart']});
-
-// Set a callback to run when the Google Visualization API is loaded.
-google.setOnLoadCallback(getDataAndDraw);
-
 function getDataAndDraw() {
-  var node = $('.chart')[0]; // where to draw the chart
+  var node_selector = '#chart_div_1';
   var datasetURL = "/resources/dataset00.json";
-  var chartType = 'BarChart';
+  var chartType = 'bar';
   var chartTitle = 'My first chart';
 
-  $.getJSON(datasetURL, function(data){
-    drawChart(node, data, chartType, chartTitle);
+  hx.json(datasetURL, function(err, data){
+    drawChart(node_selector, data, chartType, chartTitle);
   });
 
-  var node_1 = $('.chart')[1];
+  var node_selector_1 = '#chart_div_2';
   var datasetURL_1 = "/resources/dataset01.json";
-  var chartType_1 = 'ScatterChart';
+  var chartType_1 = 'scatter';
   var chartTitle_1 = 'My second chart';
 
-  $.getJSON(datasetURL_1, function(data){
-    drawChart(node_1, data, chartType_1, chartTitle_1);
+  hx.json(datasetURL_1, function(err, data){
+    drawChart(node_selector, data, chartType_1, chartTitle_1);
   });  
 }
 
@@ -36,23 +30,35 @@ function getDataAndDraw() {
 // 'type' can be one of the following strings: BarChart, ColumnChart, PieChart, ...
 // (see https://google-developers.appspot.com/chart/interactive/docs/gallery)
 function drawChart(node, data, type, title){
-  // a DataTable object is an object containing data
-  // in a format that the google API can understand.
-  // We create one and we wrap our data into it
-  var dataTable = new google.visualization.DataTable();
-  // set columns type and name
-  data.variables.forEach(function(pair){
-    dataTable.addColumn(pair[0], pair[1]);
-  });
-  // set data
-  dataTable.addRows(data.rows);
+  var graph = new hx.Graph(node)
 
-  // now that we have a data table, we can setup a chart
-  var options = {
-    'title': title,
-    'width': 400,
-    'height': 300
-  };
-  var chart = new google.visualization[type](node);
-  chart.draw(dataTable, options);
+  var axis = graph.addAxis({
+    x: {
+      scaleType: 'discrete'
+    },
+    y: {
+      scaleType: 'linear',
+      scalePaddingMax: 0.1,
+      yMin: 0
+    }
+  });
+
+  refactored = data.rows.map(function (d) {
+    return {
+      x: d[0],
+      y: d[1],
+      // color: hx.theme.plot.colors[d[1]]
+    }
+  });
+
+  axis.addSeries(type, {
+    title: title,
+    data: refactored
+  });
+
+  graph.render();
+
 }
+
+
+getDataAndDraw()
